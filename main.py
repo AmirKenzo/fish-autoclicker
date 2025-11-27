@@ -204,7 +204,15 @@ class FivemAutoFish:
         self.fish_press_e_conf = global_cfg["fish_press_e_conf"]
         self.fish_press_e_delay = global_cfg["fish_press_e_delay"]
 
-        self.monitor = config.get("monitor", 0)
+        monitor_cfg = config.get("monitor", 0)
+        if isinstance(monitor_cfg, dict):
+            self.monitor = monitor_cfg.get("index", 0)
+            self.monitor_width = monitor_cfg.get("width")
+            self.monitor_height = monitor_cfg.get("height")
+        else:
+            self.monitor = int(monitor_cfg)
+            self.monitor_width = None
+            self.monitor_height = None
         region_cfg = config["region"]
         self.region = Region(
             left=region_cfg["left"],
