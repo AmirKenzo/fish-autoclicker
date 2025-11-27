@@ -1,0 +1,86 @@
+# Configuration File
+# ==================
+# Use the following settings to configure the application behavior.
+# For detailed instructions, refer to the links provided below.
+
+# Global Settings
+# ---------------
+# These settings control the application's core functionalities.
+
+[global]
+# Detection Filters
+# ------------------
+last_no_detection_delay = 10      # Reset CS detection after this time (in seconds) to prevent freezing if no detection occurs.
+process_frame_number_threshold = 180  # RGB threshold for converting colors to 255 when detecting frame numbers.
+process_frame_boxes_threshold = 70    # RGB threshold for converting colors to 255 when detecting boxes in frames.
+fish_press_e_conf = 0.65
+fish_press_e_delay = 0.5
+
+# Confidence and Timing
+# ---------------------
+process_frame_number_conf = 0.8   # Confidence level (percentage) for detecting frame numbers.
+click_delay = 0.2                 # Time delay (in seconds) after clicking each detected box.
+pause_key_name = "f6"              # Key name for pausing and resuming the application
+
+# Visual Settings
+# ---------------
+cs_background_color_lower = [31, 39, 45] # Background color for CS. Use: https://imagecolorpicker.com/en
+cs_background_color_upper = [33, 41, 47] # Background color for CS. Use: https://imagecolorpicker.com/en
+cs_success_color = [60, 236, 84]  # Success color for CS. Use: https://imagecolorpicker.com/en
+
+# Monitor Settings
+# ----------------
+# Specify the resolution of your monitor. Use: https://pixspy.com/
+
+[monitor]
+width = 1920                     # Monitor width.
+height = 1080                    # Monitor height.
+
+# Region Settings
+# ---------------
+# Define the region for Auto CS detection. Use: https://pixspy.com/
+#
+# Steps:
+# 1. Take a screenshot of the target area.
+# 2. Upload the screenshot to the website.
+# 3. Capture the location values by right-clicking on the desired area.
+#    Example: "SELECTION 1536 × 864 @ (192, 108)"
+#    - Width and Height: 1536 × 864
+#    - Top and Left: (192, 108)
+
+[region]
+left = 192                       # Top coordinate of the target region.
+width = 1536                    # Width of the target region.
+top = 108                      # Left coordinate of the target region.
+height = 864                    # Height of the target region.
+
+
+[bar]
+x = 775
+y = 990
+
+
+[new_minig_game]
+filter_noise = 10
+number_conf = 0.65
+number_threshold = 129
+compare_dif = 0.95
+new_area_diff = 1.1
+
+[new_minig_game.main_region]
+left = 906                      
+top = 486                
+width = 107             
+height = 107
+
+
+[new_minig_game.number_region]
+left = 949                      
+top = 529                
+width = 22             
+height = 22        
+
+
+[new_minig_game.bar]
+rgb_color_lower = [170, 100, 15]
+rgb_color_upper = [200, 125, 45]
