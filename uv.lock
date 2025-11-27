@@ -182,17 +182,25 @@ wheels = [
 ]
 
 [[package]]
+name = "evdev"
+version = "1.9.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/63/fe/a17c106a1f4061ce83f04d14bcedcfb2c38c7793ea56bfb906a6fadae8cb/evdev-1.9.2.tar.gz", hash = "sha256:5d3278892ce1f92a74d6bf888cc8525d9f68af85dbe336c95d1c87fb8f423069", size = 33301, upload-time = "2025-05-01T19:53:47.69Z" }
+
+[[package]]
 name = "fish-autoclicker"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "cryptography" },
     { name = "dxcam" },
+    { name = "hwid" },
     { name = "keyboard" },
     { name = "numpy" },
     { name = "opencv-python" },
     { name = "psutil" },
     { name = "pydirectinput" },
+    { name = "pynput" },
     { name = "requests" },
     { name = "toml" },
     { name = "wmi" },
@@ -202,14 +210,25 @@ dependencies = [
 requires-dist = [
     { name = "cryptography", specifier = ">=46.0.3" },
     { name = "dxcam", specifier = ">=0.0.5" },
+    { name = "hwid", specifier = ">=0.1.0" },
     { name = "keyboard", specifier = ">=0.13.5" },
     { name = "numpy", specifier = ">=2.3.5" },
     { name = "opencv-python", specifier = ">=4.11.0.86" },
     { name = "psutil", specifier = ">=7.1.3" },
     { name = "pydirectinput", specifier = ">=1.0.4" },
+    { name = "pynput", specifier = ">=1.8.1" },
     { name = "requests", specifier = ">=2.32.5" },
     { name = "toml", specifier = ">=0.10.2" },
     { name = "wmi", specifier = ">=1.5.1" },
+]
+
+[[package]]
+name = "hwid"
+version = "0.1.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/72/99/c9ba45037e00f5c1a42c7b3777ac1257c800e30b162ea66439db55e99293/hwid-0.1.0.tar.gz", hash = "sha256:b9aebe2271ede00b406a15617622ecedd8eab079ec9689d3df7f5ca8510a7d2b", size = 4055, upload-time = "2023-09-30T17:22:51.277Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/67/78/2d9d0fca98f8ab99c4b3040e0d06078cb25f3bc8d46b1b87b7eff1c56a3a/hwid-0.1.0-py3-none-any.whl", hash = "sha256:78bfd9413d7393d2d180f3285a4e51c7cc791201c489b87808382864fcd7ba05", size = 4772, upload-time = "2023-09-30T17:22:49.55Z" },
 ]
 
 [[package]]
@@ -344,6 +363,22 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/5f/c0/cbcc5f1653d956ee2109b604747b7eaf37d59e50b41cc9dedabedf70aec6/PyDirectInput-1.0.4.tar.gz", hash = "sha256:bebe65102c69208688402f9f4cbd2ae7afc174fd2123e156e178b1304e7f80a2", size = 7486, upload-time = "2021-02-02T22:23:30.859Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/c9/8e/f909defe798270afc2241d3a8986d51459e70c37f02d2ba549627b781b2c/PyDirectInput-1.0.4-py3-none-any.whl", hash = "sha256:238bbe97f505f9c8728a47ea6a787750dbe834ec1fb42b98b3d703d827eda83e", size = 8879, upload-time = "2021-02-02T22:23:28.115Z" },
+]
+
+[[package]]
+name = "pynput"
+version = "1.8.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "evdev", marker = "'linux' in sys_platform" },
+    { name = "pyobjc-framework-applicationservices", marker = "sys_platform == 'darwin'" },
+    { name = "pyobjc-framework-quartz", marker = "sys_platform == 'darwin'" },
+    { name = "python-xlib", marker = "'linux' in sys_platform" },
+    { name = "six" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/f0/c3/dccf44c68225046df5324db0cc7d563a560635355b3e5f1d249468268a6f/pynput-1.8.1.tar.gz", hash = "sha256:70d7c8373ee98911004a7c938742242840a5628c004573d84ba849d4601df81e", size = 82289, upload-time = "2025-03-17T17:12:01.481Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/59/4f/ac3fa906ae8a375a536b12794128c5efacade9eaa917a35dfd27ce0c7400/pynput-1.8.1-py2.py3-none-any.whl", hash = "sha256:42dfcf27404459ca16ca889c8fb8ffe42a9fe54f722fd1a3e130728e59e768d2", size = 91693, upload-time = "2025-03-17T17:12:00.094Z" },
 ]
 
 [[package]]
@@ -2944,6 +2979,18 @@ wheels = [
 ]
 
 [[package]]
+name = "python-xlib"
+version = "0.33"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "six" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/86/f5/8c0653e5bb54e0cbdfe27bf32d41f27bc4e12faa8742778c17f2a71be2c0/python-xlib-0.33.tar.gz", hash = "sha256:55af7906a2c75ce6cb280a584776080602444f75815a7aff4d287bb2d7018b32", size = 269068, upload-time = "2022-12-25T18:53:00.824Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/fc/b8/ff33610932e0ee81ae7f1269c890f697d56ff74b9f5b2ee5d9b7fa2c5355/python_xlib-0.33-py2.py3-none-any.whl", hash = "sha256:c3534038d42e0df2f1392a1b30a15a4ff5fdc2b86cfa94f072bf11b10a164398", size = 182185, upload-time = "2022-12-25T18:52:58.662Z" },
+]
+
+[[package]]
 name = "pywin32"
 version = "311"
 source = { registry = "https://pypi.org/simple" }
@@ -2969,6 +3016,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/c9/74/b3ff8e6c8446842c3f5c837e9c3dfcfe2018ea6ecef224c710c85ef728f4/requests-2.32.5.tar.gz", hash = "sha256:dbba0bac56e100853db0ea71b82b4dfd5fe2bf6d3754a8893c3af500cec7d7cf", size = 134517, upload-time = "2025-08-18T20:46:02.573Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/1e/db/4254e3eabe8020b458f1a747140d32277ec7a271daf1d235b70dc0b4e6e3/requests-2.32.5-py3-none-any.whl", hash = "sha256:2462f94637a34fd532264295e186976db0f5d453d1cdd31473c85a6a161affb6", size = 64738, upload-time = "2025-08-18T20:46:00.542Z" },
+]
+
+[[package]]
+name = "six"
+version = "1.17.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/94/e7/b2c673351809dca68a0e064b6af791aa332cf192da575fd474ed7d6f16a2/six-1.17.0.tar.gz", hash = "sha256:ff70335d468e7eb6ec65b95b99d3a2836546063f63acc5171de367e834932a81", size = 34031, upload-time = "2024-12-04T17:35:28.174Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/b7/ce/149a00dd41f10bc29e5921b496af8b574d8413afcd5e30dfa0ed46c2cc5e/six-1.17.0-py2.py3-none-any.whl", hash = "sha256:4721f391ed90541fddacab5acf947aa0d3dc7d27b2e1e8eda2be8970586c3274", size = 11050, upload-time = "2024-12-04T17:35:26.475Z" },
 ]
 
 [[package]]
