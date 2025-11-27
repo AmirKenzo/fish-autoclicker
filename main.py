@@ -326,11 +326,11 @@ class FivemAutoFish:
         time.sleep(self.click_delay)
 
     def is_bar_available(self, frame: np.ndarray) -> bool:
-        _, thresh = cv2.threshold(frame, 70, 255, cv2.THRESH_BINARY)
-        try:
-            return thresh[self.bar_y, self.bar_x] > 0
-        except IndexError:
+        gray = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
+        _, thresh = cv2.threshold(gray, 70, 255, cv2.THRESH_BINARY)
+        if self.bar_y >= thresh.shape[0] or self.bar_x >= thresh.shape[1]:
             return False
+        return thresh[self.bar_y, self.bar_x] > 0
 
     def is_fish_press_e_available(self, frame: np.ndarray) -> bool:
         gray = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
