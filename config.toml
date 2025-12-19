@@ -49,10 +49,10 @@ height = 1440                    # Monitor height.
 #    - Top and Left: (192, 108)
 
 [region]
-left = 192                       # Top coordinate of the target region.
-width = 1536                    # Width of the target region.
-top = 108                      # Left coordinate of the target region.
-height = 864                    # Height of the target region.
+left = 508                       # Top coordinate of the target region.
+top = 285                      # Left coordinate of the target region.
+width = 1543                    # Width of the target region.
+height = 871                    # Height of the target region.
 
 
 [bar]
@@ -61,26 +61,27 @@ y = 990
 
 
 [new_minig_game]
-filter_noise = 10
-number_conf = 0.65
-number_threshold = 129
-compare_dif = 0.95
-new_area_diff = 1.1
+filter_noise = 5
+number_conf = 0.45
+number_threshold = 85
+compare_dif = 0.92
+new_area_diff = 1.05
 
 [new_minig_game.main_region]
-left = 906                      
-top = 486                
-width = 107             
-height = 107
+left = 1203
+top = 648
+width = 150
+height = 150
 
 
 [new_minig_game.number_region]
-left = 949                      
-top = 529                
-width = 22             
-height = 22        
+left = 1270
+top = 704
+width = 22
+height = 22
 
 
 [new_minig_game.bar]
-rgb_color_lower = [170, 100, 15]
-rgb_color_upper = [200, 125, 45]
+rgb_color_lower = [170, 100, 15] # Gray
+rgb_color_upper = [200, 125, 45] # Blue
+

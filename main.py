@@ -76,6 +76,7 @@ class NewMiniGame:
         self.starting_area = 0
         self.prev_area = 0
         self.number = 0
+        self.number_reset_flag = False  # Flag to force reset number on next detection
         self.vk_keys = [VK_1, VK_2, VK_3, VK_4]
 
         region_cfg = mini_cfg["main_region"]
@@ -115,16 +116,41 @@ class NewMiniGame:
         _, mask = cv2.threshold(roi, self.number_threshold, 255, cv2.THRESH_BINARY)
         best_score = -1.0
         detected = 0
+        all_scores = []
 
         for idx, template in enumerate(self.templates):
             result = cv2.matchTemplate(mask, template, cv2.TM_CCOEFF_NORMED)
             _, max_val, _, _ = cv2.minMaxLoc(result)
+            all_scores.append((idx + 1, max_val))
             if max_val >= self.number_conf and max_val > best_score:
                 best_score = max_val
                 detected = idx + 1
 
+        # If no number meets the confidence threshold, use the one with highest score anyway
+        # This helps with numbers that have lower confidence (like 3)
+        if not detected and all_scores:
+            best_idx, best_val = max(all_scores, key=lambda x: x[1])
+            if best_val >= 0.35:  # Minimum threshold even if below number_conf
+                detected = best_idx
+                best_score = best_val
+
+        # If reset flag is set, clear number first
+        if self.number_reset_flag:
+            self.number = 0
+            self.number_reset_flag = False
+        
+        # Always update number if detected
         if detected:
+            old_number = self.number
             self.number = detected
+            if old_number != detected:
+                scores_str = ", ".join([f"Num{n}={s:.3f}" for n, s in all_scores])
+                LOGGER.info(f"[MINIGAME] DETECTED: Number {detected} (confidence: {best_score:.3f}) | Scores: [{scores_str}]")
+        else:
+            if self.number != 0:
+                scores_str = ", ".join([f"Num{n}={s:.3f}" for n, s in all_scores])
+                LOGGER.warning(f"[MINIGAME] NOT DETECTED: No valid number found (previous: {self.number}) | Scores: [{scores_str}]")
+            # Don't reset to 0 if nothing detected - keep previous value
 
     def run(self, frame: np.ndarray) -> bool:
         zone_image = self._crop_zone(frame)
@@ -136,15 +162,35 @@ class NewMiniGame:
         cv2.drawContours(mask, contours, -1, 255, cv2.FILLED)
 
         current_area = int(np.sum(mask == 255))
+        
+        # Always try to detect number when we have an active area
+        if current_area > 0:
+            number_roi = zone_image[
+                self.number_zone.top : self.number_zone.bottom,
+                self.number_zone.left : self.number_zone.right,
+            ]
+            self._detect_number(number_roi)
+        
         if self.state == self.FOUND and self.starting_area:
             if current_area / self.starting_area <= self.compare_dif:
-                self.state = self.INTERCEPTION
+                # Only transition to INTERCEPTION if we have a valid number
+                if self.number > 0:
+                    self.state = self.INTERCEPTION
+                    area_ratio = current_area / self.starting_area
+                    LOGGER.info(f"[MINIGAME] STATE: FOUND -> INTERCEPTION | Area: {current_area}/{self.starting_area} ({area_ratio:.3f}) | Number: {self.number}")
+                else:
+                    LOGGER.warning(f"[MINIGAME] STATE: Cannot go to INTERCEPTION - no number detected (number: {self.number})")
         elif self.state == self.RESET and current_area > 0:
             self.state = self.FOUND
             self.starting_area = current_area
+            self.number_reset_flag = True  # Flag to reset number on next detection
+            LOGGER.info(f"[MINIGAME] STATE: RESET -> FOUND | Area: {current_area} | Resetting number detection")
         elif current_area == 0:
+            if self.state != self.RESET:
+                LOGGER.info(f"[MINIGAME] STATE: {self.state} -> RESET | Area: 0")
             self.state = self.RESET
             self.starting_area = 0
+            self.number = 0  # Reset number when area disappears
         elif (
             current_area != 0
             and self.state == self.FOUND
@@ -153,22 +199,21 @@ class NewMiniGame:
         ):
             self.starting_area = current_area
 
-        if current_area != self.prev_area and current_area > 0:
-            number_roi = zone_image[
-                self.number_zone.top : self.number_zone.bottom,
-                self.number_zone.left : self.number_zone.right,
-            ]
-            self._detect_number(number_roi)
-            self.prev_area = current_area
+        self.prev_area = current_area
 
         if self.state == self.INTERCEPTION and self.number:
             vk_idx = max(0, min(len(self.vk_keys) - 1, self.number - 1))
+            key_pressed = vk_idx + 1  # 1-based for logging
+            LOGGER.info(f"[MINIGAME] =====> CLICKED KEY {key_pressed} <===== | Detected Number: {self.number}")
             press_key(self.vk_keys[vk_idx])
             self.state = self.RESET
             self.number = 0
+            self.number_reset_flag = False  # Clear flag
             self.prev_area = 0
             self.starting_area = 0
             return True
+        elif self.state == self.INTERCEPTION and not self.number:
+            LOGGER.warning(f"[MINIGAME] STATE: INTERCEPTION but no number detected! (number: {self.number}) - waiting...")
 
         return self.state != self.RESET
 
@@ -186,6 +231,7 @@ class FivemAutoFish:
         self.went_to_none = False
         self.pause = True
         self.last_no_detection = time.time()
+        self.e_press_count = 0  # Counter for E key presses
 
         global_cfg = config["global"]
         self.last_no_detection_delay = global_cfg["last_no_detection_delay"]
@@ -257,8 +303,12 @@ class FivemAutoFish:
 
             should_press = self.is_fish_press_e_available(frame) or self.is_bar_available(frame)
             if should_press:
+                self.e_press_count += 1
+                reason = "fish_press_e" if self.is_fish_press_e_available(frame) else "bar"
+                LOGGER.info(f"[E KEY] =====> Pressed E (x2) <===== | Count: {self.e_press_count} | Reason: {reason}")
                 pydirectinput.press("e")
                 time.sleep(self.fish_press_e_delay)
+                pydirectinput.press("e")
             else:
                 time.sleep(0.02)
 
