@@ -9,7 +9,7 @@
 ابتدا پروژه را از گیتهاب دانلود کنید:
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/fish-autoclicker.git
+git clone https://github.com/AmirKenzo/fish-autoclicker.git
 cd fish-autoclicker
 ```
 
